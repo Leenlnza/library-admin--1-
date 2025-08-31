@@ -6,25 +6,25 @@
    Custom Properties (Light Mode)
 ----------------------------- */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: 0 0% 100%;       /* white */
+  --foreground: 210 10% 23%;     /* dark gray */
+  --card: 0 0% 100%;             /* white */
+  --card-foreground: 210 10% 23%; 
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 10% 23%;
+  --primary: 240 100% 50%;       /* blue */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 200 15% 97%;      
+  --secondary-foreground: 210 10% 23%;
+  --muted: 200 15% 97%;
+  --muted-foreground: 140 10% 56%;
+  --accent: 200 15% 97%;
+  --accent-foreground: 210 10% 23%;
+  --destructive: 0 70% 40%;      /* red */
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 16% 82%;
+  --input: 210 16% 95%;
+  --ring: 215 20% 65%;
   --radius: 0.625rem;
 }
 
@@ -32,25 +32,25 @@
    Dark Mode Variables
 ----------------------------- */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  --background: 210 10% 10%;     /* dark bg */
+  --foreground: 0 0% 100%;       /* white text */
+  --card: 210 10% 10%;
+  --card-foreground: 0 0% 100%;
+  --popover: 210 10% 10%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 0 0% 100%;          
+  --primary-foreground: 210 10% 23%;
+  --secondary: 200 15% 27%;      
+  --secondary-foreground: 0 0% 100%;
+  --muted: 200 15% 27%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 200 15% 27%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 70% 35%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 200 15% 27%;
+  --input: 200 15% 27%;
+  --ring: 215 20% 65%;
 }
 
 /* ----------------------------
@@ -58,49 +58,49 @@
 ----------------------------- */
 @layer base {
   *, *::before, *::after {
-    border-color: var(--border);
+    border-color: hsl(var(--border));
   }
 
   body {
     @apply font-sans;
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 
   button,
   input,
   select,
   textarea {
-    border: 1px solid var(--border);
+    border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
-    background-color: var(--input);
-    color: var(--foreground);
+    background-color: hsl(var(--input));
+    color: hsl(var(--foreground));
     padding: 0.5rem 1rem;
     &:focus {
-      outline: 2px solid var(--ring);
+      outline: 2px solid hsl(var(--ring));
       outline-offset: 2px;
     }
   }
 
   .card {
-    background-color: var(--card);
-    color: var(--card-foreground);
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: 1px solid hsl(var(--border));
     padding: 1rem;
   }
 
   .popover {
-    background-color: var(--popover);
-    color: var(--popover-foreground);
+    background-color: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: 1px solid hsl(var(--border));
     padding: 0.5rem;
   }
 
   .btn-primary {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     border-radius: var(--radius);
     padding: 0.5rem 1rem;
     &:hover {
@@ -109,8 +109,8 @@
   }
 
   .btn-secondary {
-    background-color: var(--secondary);
-    color: var(--secondary-foreground);
+    background-color: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
     border-radius: var(--radius);
     padding: 0.5rem 1rem;
     &:hover {
@@ -119,8 +119,8 @@
   }
 
   .btn-destructive {
-    background-color: var(--destructive);
-    color: var(--destructive-foreground);
+    background-color: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
     border-radius: var(--radius);
     padding: 0.5rem 1rem;
     &:hover {

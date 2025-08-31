@@ -244,24 +244,28 @@ function InputField({ label, value, setValue }: InputFieldProps) {
                   <CardTitle className="text-sm font-medium">หนังสือที่ถูกยืม</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-secondary">
+                <CardContent style={{ color: "hsl(var(--primary))" }}>
+                  <div className="text-2xl font-bold text-secondary  "style={{ color: "hsl(var(--primary))" }}>
                     {books.filter((b) => !b.available).length}
                   </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">การยืมที่ใช้งานอยู่</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-accent">
-                    {borrowhistories.filter((bh) => bh.status === "borrowed").length}
-                  </div>
-                </CardContent>
-              </Card>
+  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+    <CardTitle className="text-sm font-medium">การยืมที่ใช้งานอยู่</CardTitle>
+    <Clock className="h-4 w-4 text-muted-foreground" />
+  </CardHeader>
+  <CardContent>
+    <div
+      className="text-2xl font-bold"
+      style={{ color: "hsl(var(--primary))" }}
+    >
+      {borrowhistories.filter((bh) => bh.status === "borrowed").length}
+    </div>
+  </CardContent>
+</Card>
+
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
