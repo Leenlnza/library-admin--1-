@@ -2,8 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ----------------------------
+   Custom Properties (Light Mode)
+----------------------------- */
 :root {
-  /* Updated color tokens to match library admin design brief */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -23,24 +25,13 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* ----------------------------
+   Dark Mode Variables
+----------------------------- */
 .dark {
-  /* Updated dark mode colors to maintain consistency */
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
@@ -60,26 +51,80 @@
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
 }
 
+/* ----------------------------
+   Base Styles Using Tailwind
+----------------------------- */
 @layer base {
-  * {
-    @apply border-border;
+  *, *::before, *::after {
+    border-color: var(--border);
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply font-sans;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--input);
+    color: var(--foreground);
+    padding: 0.5rem 1rem;
+    &:focus {
+      outline: 2px solid var(--ring);
+      outline-offset: 2px;
+    }
+  }
+
+  .card {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 1rem;
+  }
+
+  .popover {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 0.5rem;
+  }
+
+  .btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .btn-secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .btn-destructive {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    &:hover {
+      opacity: 0.9;
+    }
   }
 }

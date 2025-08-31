@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Dialog,
@@ -16,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+
 import {
   BookOpen,
   Users,
@@ -80,10 +83,14 @@ interface AdminDashboardProps {
 export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState("overview")
-  const [books, setBooks] = useState<Book[]>([])
+  const [books, setBooks] = useState<Book[]>([]);
   const [members, setMembers] = useState<Member[]>([])
   const [borrowhistories, setBorrowhistories] = useState<BorrowHistory[]>([])
   const [loading, setLoading] = useState(true)
+  const [newTitle, setNewTitle] = useState("");
+  const [newAuthor, setNewAuthor] = useState("");
+  const [newCategory, setNewCategory] = useState("");
+  
 
   // Fetch books
   const fetchBooks = async () => {
@@ -110,6 +117,20 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
       console.error("Failed to fetch members:", err)
     }
   }
+  interface InputFieldProps {
+  label: string;
+  value: string;
+  setValue: (val: string) => void;
+}
+
+function InputField({ label, value, setValue }: InputFieldProps) {
+  return (
+    <div>
+      <Label>{label}</Label>
+      <Input value={value} onChange={(e) => setValue(e.target.value)} />
+    </div>
+  );
+}
 
   // Fetch borrow histories
   const fetchBorrowhistories = async () => {
@@ -270,35 +291,127 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
               </Card>
             </div>
           </TabsContent>
+                  <TabsContent value="books" className="space-y-6">
+  <Card>
+    <CardHeader className="flex justify-between items-center">
+      <div>
+        <CardTitle>จัดการหนังสือ</CardTitle>
+        <CardDescription>รายการหนังสือทั้งหมดในระบบ</CardDescription>
+      </div>
+                    
+      {/* ปุ่มเพิ่มหนังสือ */}
+      <Dialog>
+  <DialogTrigger asChild>
+    <Button size="sm" variant="outline" className="gap-2">
+      <Plus className="h-4 w-4" /> เพิ่มหนังสือ
+    </Button>
+  </DialogTrigger>
+
+
+
+  <DialogContent className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white/30 backdrop-blur-md shadow-lg border border-gray-200 rounded-lg">
+    <DialogHeader>
+      <DialogTitle>เพิ่มหนังสือใหม่</DialogTitle>
+      <DialogDescription>กรอกข้อมูลหนังสือที่ต้องการเพิ่ม</DialogDescription>
+    </DialogHeader>
+
+    <div className="space-y-4 mt-2">
+      <Input
+        placeholder="ชื่อหนังสือ"
+        value={newTitle}
+        onChange={(e) => setNewTitle(e.target.value)}
+      />
+      <Input
+        placeholder="ผู้แต่ง"
+        value={newAuthor}
+        onChange={(e) => setNewAuthor(e.target.value)}
+      />
+      <Input
+        placeholder="หมวดหมู่"
+        value={newCategory}
+        onChange={(e) => setNewCategory(e.target.value)}
+      />
+    </div>
+
+    <DialogFooter>
+      <Button
+        type="button"
+        className="w-full"
+        onClick={async () => {
+          if (!newTitle || !newAuthor || !newCategory) {
+            alert("กรุณากรอกข้อมูลให้ครบ");
+            return;
+          }
+
+          const newBook = {
+            title: newTitle,
+            author: newAuthor,
+            category: newCategory,
+            available: true,
+            borrowedBy: null,
+            borrowerPhone: null,
+            borrowedDate: null,
+            dueDate: null,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+
+          try {
+            const res = await fetch("/api/books", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(newBook),
+            });
+
+            if (!res.ok) throw new Error("เพิ่มหนังสือไม่สำเร็จ");
+
+            const addedBook = await res.json();
+
+            setBooks((prev) => [...prev, addedBook]);
+
+            setNewTitle("");
+            setNewAuthor("");
+            setNewCategory("");
+
+            alert("เพิ่มหนังสือเรียบร้อยแล้ว");
+          } catch (err) {
+            console.error(err);
+            alert("เพิ่มหนังสือไม่สำเร็จ กรุณาลองใหม่");
+          }
+        }}
+      >
+        เพิ่ม
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+    </CardHeader>
+
+    <CardContent>
+      <div className="space-y-4">
+        {filteredBooks.map((b) => (
+          <div key={b._id} className="flex items-center justify-between p-4 rounded-lg border">
+            <div className="flex-1">
+              <h3 className="font-medium">{b.title}</h3>
+              <p className="text-sm text-muted-foreground">โดย {b.author}</p>
+              <p className="text-xs text-muted-foreground">หมวดหมู่: {b.category}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant={b.available ? "default" : "secondary"}>
+                {b.available ? "พร้อมให้ยืม" : `ถูกยืมโดย ${b.borrowedBy || ""}`}
+              </Badge>
+            </div>
+          </div>
+        ))}
+      </div>
+    </CardContent>
+  </Card>
+</TabsContent>
 
           {/* Books Tab */}
-          <TabsContent value="books" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>จัดการหนังสือ</CardTitle>
-                <CardDescription>รายการหนังสือทั้งหมดในระบบ</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {filteredBooks.map((b) => (
-                    <div key={b._id} className="flex items-center justify-between p-4 rounded-lg border">
-                      <div className="flex-1">
-                        <h3 className="font-medium">{b.title}</h3>
-                        <p className="text-sm text-muted-foreground">โดย {b.author}</p>
-                        <p className="text-xs text-muted-foreground">หมวดหมู่: {b.category}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={b.available ? "default" : "secondary"}>
-                          {b.available ? "พร้อมให้ยืม" : `ถูกยืมโดย ${b.borrowedBy || ""}`}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
+ 
+                  
           {/* BorrowHistories Tab */}
           <TabsContent value="borrowhistories" className="space-y-6">
   <Card>
@@ -362,6 +475,7 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
     </CardContent>
   </Card>
 </TabsContent>
+
 
 
           {/* Members Tab */}
