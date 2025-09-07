@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,6 +23,14 @@ export function LoginForm({ onLogin }: LoginFormProps) {
     password: "admin123",
   }
 
+  // ✅ ถ้ามี username อยู่แล้ว ให้ข้าม login ไปเลย
+  useEffect(() => {
+    const savedUser = localStorage.getItem("username")
+    if (savedUser) {
+      onLogin(savedUser)
+    }
+  }, [onLogin])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -31,6 +38,8 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
     setTimeout(() => {
       if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
+        // ✅ เก็บ username ลง localStorage
+        localStorage.setItem("username", username)
         onLogin(username)
       } else {
         setError("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")

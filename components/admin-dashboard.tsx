@@ -5,8 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Dialog,
@@ -24,7 +22,6 @@ import {
   Users,
   Clock,
   Search,
-  RotateCcw,
   History,
   BookMarked,
   Calendar,
@@ -81,18 +78,35 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
+  const [currentUser, setCurrentUser] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState("overview")
-  const [books, setBooks] = useState<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>([])
   const [members, setMembers] = useState<Member[]>([])
   const [borrowhistories, setBorrowhistories] = useState<BorrowHistory[]>([])
   const [loading, setLoading] = useState(true)
-  const [newTitle, setNewTitle] = useState("");
-  const [newAuthor, setNewAuthor] = useState("");
-  const [newCategory, setNewCategory] = useState("");
-  
+  const [newTitle, setNewTitle] = useState("")
+  const [newAuthor, setNewAuthor] = useState("")
+  const [newCategory, setNewCategory] = useState("")
 
-  // Fetch books
+  // โหลด username จาก localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("username")
+    if (storedUser) {
+      setCurrentUser(storedUser)
+    } else if (username) {
+      setCurrentUser(username)
+      localStorage.setItem("username", username)
+    }
+  }, [username])
+
+  const handleLogout = () => {
+    localStorage.removeItem("username")
+    setCurrentUser(null)
+    onLogout()
+  }
+
+  // ------------------- Fetch -------------------
   const fetchBooks = async () => {
     try {
       const res = await fetch("/api/books")
@@ -105,7 +119,6 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
     }
   }
 
-  // Fetch members
   const fetchMembers = async () => {
     try {
       const res = await fetch("/api/members")
@@ -117,22 +130,7 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
       console.error("Failed to fetch members:", err)
     }
   }
-  interface InputFieldProps {
-  label: string;
-  value: string;
-  setValue: (val: string) => void;
-}
 
-function InputField({ label, value, setValue }: InputFieldProps) {
-  return (
-    <div>
-      <Label>{label}</Label>
-      <Input value={value} onChange={(e) => setValue(e.target.value)} />
-    </div>
-  );
-}
-
-  // Fetch borrow histories
   const fetchBorrowhistories = async () => {
     try {
       const res = await fetch("/api/borrowhistories")
@@ -154,6 +152,7 @@ function InputField({ label, value, setValue }: InputFieldProps) {
     loadData()
   }, [])
 
+  // ------------------- Filters -------------------
   const filteredBooks = books.filter(
     (b) =>
       b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -205,8 +204,15 @@ function InputField({ label, value, setValue }: InputFieldProps) {
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">สวัสดี, {username}</span>
-              <Button variant="outline" size="sm" onClick={onLogout} className="gap-2 bg-transparent">
+              <span className="text-sm text-muted-foreground">
+                สวัสดี, {currentUser || "ผู้ใช้"}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="gap-2 bg-transparent"
+              >
                 <LogOut className="h-4 w-4" />
                 ออกจากระบบ
               </Button>
