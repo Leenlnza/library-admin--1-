@@ -105,7 +105,8 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
     setCurrentUser(null)
     onLogout()
   }
-
+  const [borrowFilter, setBorrowFilter] = useState<"all" | "today" | "7days" | "month">("all")
+  
   // ------------------- Fetch -------------------
   const fetchBooks = async () => {
     try {
@@ -167,11 +168,40 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
       m.phone.includes(searchTerm)
   )
 
-  const filteredBorrowhistories = borrowhistories.filter(
-    (bh) =>
-      bh.bookTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bh.borrower.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredBorrowhistories = borrowhistories.filter((bh) => {
+  const matchSearch =
+    bh.bookTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    bh.borrower.toLowerCase().includes(searchTerm.toLowerCase())
+
+  if (!matchSearch) return false
+
+  const today = new Date()
+  const dueDate = new Date(bh.dueDate)
+
+  if (borrowFilter === "today") {
+    return (
+      dueDate.getDate() === today.getDate() &&
+      dueDate.getMonth() === today.getMonth() &&
+      dueDate.getFullYear() === today.getFullYear()
+    )
+  }
+
+  if (borrowFilter === "7days") {
+    const past7 = new Date()
+    past7.setDate(today.getDate() - 7)
+    return dueDate >= past7 && dueDate <= today
+  }
+
+  if (borrowFilter === "month") {
+    return (
+      dueDate.getMonth() === today.getMonth() &&
+      dueDate.getFullYear() === today.getFullYear()
+    )
+  }
+
+  return true // กรณี all
+})
+
 
   if (loading) {
     return (
@@ -326,16 +356,19 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
     </DialogHeader>
 
     <div className="space-y-4 mt-2">
+      <Label>ชื่อหนังสือ</Label>
       <Input
         placeholder="ชื่อหนังสือ"
         value={newTitle}
         onChange={(e) => setNewTitle(e.target.value)}
       />
+      <Label>ผู้แต่ง</Label>
       <Input
         placeholder="ผู้แต่ง"
         value={newAuthor}
         onChange={(e) => setNewAuthor(e.target.value)}
       />
+      <Label>หมวดหมู่</Label>
       <Input
         placeholder="หมวดหมู่"
         value={newCategory}
@@ -430,12 +463,26 @@ export function AdminDashboard({ username, onLogout }: AdminDashboardProps) {
       <CardDescription>รายการยืม-คืนทั้งหมด</CardDescription>
     </CardHeader>
     <CardContent>
+      <div className="flex items-center gap-2 mb-4">
+  <Label>กรองตามกำหนดคืน:</Label>
+  <select
+    value={borrowFilter}
+    onChange={(e) => setBorrowFilter(e.target.value as any)}
+    className="border rounded px-2 py-1"
+  >
+    <option value="all">ทั้งหมด</option>
+    <option value="today">กำหนดคืนวันนี้</option>
+    <option value="7days">ภายใน 7 วันที่ผ่านมา</option>
+    <option value="month">เดือนนี้</option>
+  </select>
+</div>
       <div className="space-y-4">
         {filteredBorrowhistories.map((bh) => (
           <div
             key={bh._id}
             className="flex items-center justify-between p-4 rounded-lg border"
           >
+            
             <div className="flex-1">
               <h3 className="font-medium">{bh.bookTitle}</h3>
               <p className="text-sm text-muted-foreground">ผู้ยืม: {bh.borrower}</p>

@@ -99,11 +99,6 @@ export function LoginForm({ onLogin }: LoginFormProps) {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
             </Button>
-            <div className="text-xs text-muted-foreground text-center mt-4 p-2 bg-muted/50 rounded">
-              <p>สำหรับทดสอบ:</p>
-              <p>ชื่อผู้ใช้: admin</p>
-              <p>รหัสผ่าน: admin123</p>
-            </div>
           </form>
         </CardContent>
       </Card>
